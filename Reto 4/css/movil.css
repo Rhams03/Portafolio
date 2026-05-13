@@ -1,0 +1,843 @@
+/* ═══════════════════════════════════════════════════════════
+   MOVIL.CSS — MÉDICAS DEL MUNDO
+   Este archivo solo se carga en pantallas de 768px o menos.
+   Se usa junto a estilos.css con:
+       <link rel="stylesheet" href="css/estilos.css">
+       <link rel="stylesheet" href="css/movil.css" media="screen and (max-width: 768px)">
+
+   MENÚ HAMBURGUESA SIN JAVASCRIPT
+   ─────────────────────────────────────────────────────────
+   Técnica: checkbox oculto + label como botón + :checked ~
+     1. <input type="checkbox" id="nav-toggle" class="nav-toggle-input"> (oculto)
+     2. <label for="nav-toggle" class="boton-hamburguesa"> → abre/cierra
+     3. #nav-toggle:checked ~ .cajon-movil  → muestra el cajón
+     4. #nav-toggle:checked ~ .overlay-movil → muestra la capa oscura
+   ═══════════════════════════════════════════════════════════
+   ÍNDICE
+   ───────────────────────────────────────────────────────────
+    1.  RESET GENERAL MÓVIL
+    2.  CHECKBOX OCULTO (mecanismo sin JS)
+    3.  MENÚ HAMBURGUESA — PÚBLICA (index.php)
+    4.  MENÚ CAJÓN — PÚBLICA (drawer)
+    5.  ESTADOS :checked — apertura/cierre del cajón (sin JS)
+    6.  HEADER & HERO PÚBLICO
+    7.  SECCIONES DE CONTENIDO (index)
+    8.  FOOTER PÚBLICO
+    9.  LOGIN
+   10.  PANEL ADMIN / EDITORA — BARRA SUPERIOR Y HAMBURGUESA
+   11.  PANEL ADMIN / EDITORA — CAJÓN LATERAL MÓVIL
+   12.  PANEL ADMIN / EDITORA — ÁREA PRINCIPAL
+   13.  PANEL ADMIN / EDITORA — TABLAS
+   14.  PANEL ADMIN / EDITORA — FORMULARIOS
+   15.  PANEL ADMIN / EDITORA — TARJETA PERFIL
+   16.  BLOG PÚBLICO
+   17.  CATEGORÍAS PÚBLICAS (círculos)
+   18.  SUBCATEGORÍAS & CONTENIDO FINAL
+   19.  PANTALLAS MUY PEQUEÑAS (480px)
+   ─────────────────────────────────────────────────────────── */
+
+
+/* ____________________________________________________________
+   1. RESET GENERAL MÓVIL
+   ____________________________________________________________ */
+
+/* aseguramos que nada desborde horizontalmente */
+*, *::before, *::after {
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+
+/* ____________________________________________________________
+   2. CHECKBOX OCULTO (mecanismo sin JS)
+   ____________________________________________________________ */
+/* OCULTAR CHECKBOX DEL MENÚ HAMBURGUESA - FORZADO */
+.nav-toggle-input,
+#nav-toggle,
+#admin-nav-toggle {
+    display: none !important;
+}
+/* ____________________________________________________________
+   3. MENÚ HAMBURGUESA — PÚBLICA (index.php)
+   ____________________________________________________________ */
+
+/* ocultamos la barra de navegación horizontal */
+.lista-navegacion {
+    display: none;
+}
+
+/* ocultamos también el botón de login de la barra */
+.boton-acceso {
+    display: none;
+}
+
+/* botón de tres líneas (es un <label>) — aparece en el nav */
+.boton-hamburguesa {
+    position: absolute;
+    right: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    font-size: 22px;
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    z-index: 200;
+}
+
+.boton-hamburguesa:hover {
+    background: rgba(255, 255, 255, 0.35);
+}
+
+
+/* ____________________________________________________________
+   4. MENÚ CAJÓN — PÚBLICA (drawer)
+   ____________________________________________________________ */
+
+/* capa oscura detrás del cajón — es un <label>, oculta por defecto */
+.overlay-movil {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 300;
+    cursor: pointer;
+}
+
+/* el cajón en sí: empieza fuera de pantalla con transform */
+.cajon-movil {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translateX(-100%);
+    width: 270px;
+    height: 100vh;
+    background: linear-gradient(180deg, var(--color-primary), var(--color-dark));
+    z-index: 400;
+    flex-direction: column;
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+}
+
+/* cabecera del cajón con logo y botón cerrar */
+.cajon-cabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.cajon-cabecera img {
+    width: 100px;
+    height: auto;
+}
+
+/* botón X para cerrar el cajón (es un <label>) */
+.boton-cerrar-cajon {
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    color: white;
+    font-size: 20px;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* lista de enlaces del cajón */
+.cajon-nav {
+    list-style: none;
+    padding: 15px 0;
+    margin: 0;
+    flex: 1;
+}
+
+.cajon-nav li a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 22px;
+    color: white;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.cajon-nav li a:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.cajon-nav li a i {
+    width: 20px;
+    font-size: 16px;
+}
+
+/* pie del cajón con botón login */
+.cajon-pie {
+    padding: 15px 20px 25px;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.cajon-pie a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.cajon-pie a:hover {
+    background: rgba(255, 255, 255, 0.35);
+}
+
+
+/* ____________________________________________________________
+   5. ESTADOS :checked — apertura / cierre del cajón (SIN JS)
+   ____________________________________________________________
+
+   El checkbox #nav-toggle (o #admin-nav-toggle) es un hermano
+   anterior al overlay y al cajón en el DOM.
+   Cuando está marcado, el selector  ~ sibling  los activa.
+   ____________________________________________________________ */
+
+/* — CAJÓN PÚBLICO (index.php) — */
+
+/* muestra el cajón deslizándolo hacia dentro */
+#nav-toggle:checked ~ .cajon-movil {
+    transform: translateX(0);
+}
+
+/* muestra la capa oscura detrás del cajón */
+#nav-toggle:checked ~ .overlay-movil {
+    display: block;
+}
+
+/* bloquea el scroll del body mientras el cajón está abierto */
+body:has(#nav-toggle:checked) {
+    overflow: hidden;
+}
+
+
+/* — CAJÓN ADMIN / EDITORA (nav.php) — */
+
+/* muestra el cajón */
+#admin-nav-toggle:checked ~ .cajon-movil {
+    transform: translateX(0);
+}
+
+/* muestra la capa oscura */
+#admin-nav-toggle:checked ~ .overlay-movil {
+    display: block;
+}
+
+/* bloquea el scroll del body mientras el cajón está abierto */
+body:has(#admin-nav-toggle:checked) {
+    overflow: hidden;
+}
+
+
+/* ____________________________________________________________
+   6. HEADER & HERO PÚBLICO
+   ____________________________________________________________ */
+
+.contenedor-hero {
+    padding: 15px 5% 80px;
+    border-radius: 0 0 30% 30% / 0 0 25% 25%;
+}
+
+.barra-nav {
+    height: auto;
+    padding: 8px 0;
+    position: relative;
+}
+
+/* logo más pequeño en móvil */
+.medicos-logo {
+    position: relative;
+    left: auto;
+    width: 90px;
+    margin: 0;
+}
+
+.titulo-gigante {
+    font-size: 38px;
+    margin-top: 30px;
+}
+
+.subtitulo-hero {
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+
+/* ____________________________________________________________
+   7. SECCIONES DE CONTENIDO (index)
+   ____________________________________________________________ */
+
+/* cajas en columna en móvil */
+.caja-info,
+.caja-info2 {
+    flex-direction: column !important;
+    padding: 25px 18px;
+    gap: 22px;
+    border-radius: 20px;
+    margin: 35px auto;
+    max-width: 100%;
+    text-align: center;
+    align-items: center;
+}
+
+.columna-texto { order: 2; }
+.columna-imagen { order: 1; }
+
+/* en la segunda caja los textos van primero */
+.caja-info2 .columna-texto { order: 1; }
+.caja-info2 .columna-imagen { order: 2; }
+
+.columna-texto h1,
+.columna-texto h2 {
+    font-size: 19px;
+    margin-bottom: 10px;
+}
+
+.columna-texto p {
+    font-size: 14px;
+    line-height: 1.65;
+}
+
+.imagen-circular {
+    width: 160px;
+    height: 160px;
+    border-width: 4px;
+    margin: 0 auto;
+}
+
+.enlace-saber-mas {
+    font-size: 13px;
+    justify-content: center;
+}
+
+/* sección sobre nosotras */
+.caja-sobre-vertical {
+    max-width: 100%;
+    margin: 50px auto;
+    padding: 28px 18px;
+    border-radius: 18px;
+    text-align: center;
+}
+
+.texto-centrado h2  { font-size: 19px; }
+.texto-centrado p   { font-size: 14px; line-height: 1.6; }
+
+.foto-perfil {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 16px;
+}
+
+.titulo-seccion {
+    font-size: 22px;
+    margin: 20px 0 12px;
+}
+
+
+/* ____________________________________________________________
+   8. FOOTER PÚBLICO
+   ____________________________________________________________ */
+
+.pie-pagina {
+    flex-direction: column;
+    align-items: center;
+    padding: 35px 15px;
+    text-align: center;
+}
+
+.columna-footer {
+    width: 100%;
+    min-width: auto;
+    margin: 14px 0;
+}
+
+.columna-footer h3 {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.logo-footer-blanco { width: 110px; margin: 0 auto 10px; }
+
+.redes-sociales     { gap: 12px; justify-content: center; }
+.redes-sociales a i { font-size: 22px; }
+
+.link-google i {
+    font-size: 28px;
+    padding: 8px;
+}
+
+/* botón subir */
+.boton-subir {
+    width: 42px;
+    height: 42px;
+    font-size: 18px;
+}
+
+
+/* ____________________________________________________________
+   9. LOGIN
+   ____________________________________________________________ */
+
+/* tarjeta en columna: imagen arriba, formulario abajo */
+.formulario {
+    flex-direction: column;
+    width: 95%;
+    margin: 18% auto 0;
+    border-radius: 16px;
+}
+
+.imagen-lateral {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.formulario form {
+    width: 100%;
+    padding: 28px 20px;
+}
+
+.formulario h1       { font-size: 22px; margin-bottom: 14px; }
+.formulario label    { font-size: 13px; margin-bottom: 4px; }
+.formulario input    { padding: 9px 10px; font-size: 14px; margin-bottom: 10px; }
+.formulario button   { padding: 12px 15px; font-size: 14px; }
+.volver-link         { font-size: 12px; margin-top: 8px; display: block; }
+
+.login-etiqueta      { padding: 8px 14px; gap: 8px; margin-bottom: 16px; }
+.login-etiqueta-logo { width: 32px; height: 32px; }
+.login-etiqueta span { font-size: 13px; }
+
+
+/* ____________________________________________________________
+   10. PANEL ADMIN / EDITORA — BARRA SUPERIOR Y HAMBURGUESA
+   ____________________________________________________________ */
+
+/* ocultamos el sidebar fijo en móvil */
+.navegacion-lateral {
+    display: none;
+}
+
+/* el área principal ocupa toda la pantalla (ya no hay sidebar) */
+.area-principal {
+    margin-left: 0 !important;
+    width: 100% !important;
+    padding: 70px 15px 15px;
+}
+
+/* barra superior fija en móvil — fuera del flujo flex con position:fixed */
+.barra-admin-movil {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 200;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-dark));
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    margin: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* texto del nombre del panel */
+.barra-admin-movil span {
+    color: white;
+    font-weight: 700;
+    font-size: 15px;
+}
+
+/* botón hamburguesa del panel admin (es un <label>) */
+.boton-hamburguesa-admin {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    font-size: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* ____________________________________________________________
+   11. PANEL ADMIN / EDITORA — CAJÓN LATERAL MÓVIL
+   ____________________________________________________________
+
+   El cajón admin usa las mismas clases .cajon-movil y .overlay-movil
+   que el cajón público. Los estados :checked del apartado 5
+   ya los controlan. No se necesita CSS adicional aquí.
+   ____________________________________________________________ */
+
+
+/* ____________________________________________________________
+   12. PANEL ADMIN / EDITORA — ÁREA PRINCIPAL
+   ____________________________________________________________ */
+
+.encabezado-contenido {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.texto-bienvenida h1 { font-size: 20px; }
+.texto-bienvenida p  { font-size: 13px; }
+
+.tarjeta-blanca {
+    padding: 18px;
+    border-radius: 12px;
+    margin-bottom: 18px;
+}
+
+.cabecera-tarjeta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+/* grid de categorías en admin: 1 columna */
+.admin-grid-categorias {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-top: 16px;
+}
+
+.admin-buscador-formulario {
+    max-width: 100%;
+}
+
+.admin-grupo-imagenes {
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+
+.admin-zona-creacion { max-width: 100%; }
+.admin-formulario-moderno { padding: 20px 15px; border-radius: 14px; }
+
+
+/* ____________________________________________________________
+   13. PANEL ADMIN / EDITORA — TABLAS
+   ____________________________________________________________ */
+
+.tarjeta-blanca {
+    overflow-x: auto;
+}
+
+table.tabla-admin {
+    min-width: 520px;
+    font-size: 13px;
+}
+
+table.tabla-admin th,
+table.tabla-admin td {
+    padding: 10px 10px;
+}
+
+td.celda-acciones {
+    gap: 8px;
+}
+
+
+/* ____________________________________________________________
+   14. PANEL ADMIN / EDITORA — FORMULARIOS
+   ____________________________________________________________ */
+
+.formulario-compacto { gap: 0; }
+
+.campo-fila { margin-bottom: 12px; }
+
+.campo-fila label { font-size: 13px; margin-bottom: 4px; }
+
+.campo-fila input,
+.campo-fila textarea,
+.campo-fila select {
+    padding: 9px 10px;
+    font-size: 14px;
+}
+
+button.boton-subir-noticia {
+    width: 100%;
+    padding: 12px;
+    align-self: stretch;
+    font-size: 14px;
+}
+
+select.selector-admin {
+    padding: 9px 10px;
+    font-size: 14px;
+}
+
+.admin-boton-crear {
+    width: 100%;
+    justify-content: center;
+    padding: 13px;
+}
+
+.admin-form-centrado { max-width: 100%; }
+
+
+/* ____________________________________________________________
+   15. PANEL ADMIN / EDITORA — TARJETA PERFIL
+   ____________________________________________________________ */
+
+.perfil-card-wrapper { padding-top: 60px; }
+
+.perfil-card {
+    padding: 60px 20px 30px;
+    border-radius: 16px;
+}
+
+.perfil-card-nombre { font-size: 18px; }
+.perfil-card-rol    { font-size: 11px; margin-bottom: 18px; }
+
+.perfil-campo {
+    padding: 3px 3px 3px 12px;
+    margin-bottom: 12px;
+}
+
+.perfil-campo input { font-size: 13px; padding: 8px 0; }
+
+.perfil-campo-icono {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+.perfil-card-btn { padding: 12px; font-size: 13px; }
+
+.manual-wrapper { margin-top: 20px; padding-bottom: 10px; }
+.manual-btn { font-size: 13px; padding: 9px 16px; }
+
+
+/* ____________________________________________________________
+   16. BLOG PÚBLICO
+   ____________________________________________________________ */
+
+.contenedor-blog { margin: 35px auto; padding: 0 14px; }
+
+.texto-hero h2 { font-size: 26px; margin-top: 10px; }
+.texto-hero p  { font-size: 13px; }
+
+.rejilla-blog {
+    grid-template-columns: 1fr;
+    gap: 1px;
+}
+
+.tarjeta-noticia   { border-radius: 0; }
+.cabecera-foto img { height: 170px; }
+.cuerpo-tarjeta    { padding: 16px; }
+.fecha-post        { font-size: 10px; letter-spacing: 1px; }
+.cuerpo-tarjeta h3 { font-size: 16px; margin: 8px 0; }
+.cuerpo-tarjeta p  { font-size: 12px; line-height: 1.6; }
+.pie-tarjeta       { padding: 10px 16px 16px; }
+.boton-leer        { font-size: 10px; letter-spacing: 1px; }
+
+.detalle-noticia     { margin: 35px auto; padding: 0 14px 35px; }
+.detalle-noticia img { height: 220px; margin-bottom: 22px; }
+.detalle-noticia h2  { font-size: 24px; line-height: 1.3; }
+.detalle-noticia > p { font-size: 14px; }
+.detalle-noticia div { font-size: 13px; line-height: 1.8; }
+
+
+/* ____________________________________________________________
+   17. CATEGORÍAS PÚBLICAS (círculos)
+   ____________________________________________________________ */
+
+.cabecera-minimal { padding: 12px 0; }
+
+.contenedor-header {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+    padding: 0 14px;
+}
+
+.btn-volver-atras { font-size: 12px; padding: 7px 14px; }
+.titulo-cabecera  { font-size: 15px; }
+
+.zona-busqueda { max-width: 100%; padding: 0 14px; margin: 18px auto 8px; }
+
+.barra-busqueda-input input,
+.barra-busqueda input { padding: 11px 15px; font-size: 14px; }
+
+.barra-busqueda-input button { padding: 0 15px; font-size: 14px; }
+
+/* grid de círculos: 2 por fila en móvil */
+.grid-etiquetas {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    margin: 28px auto 40px;
+    padding: 0 14px;
+}
+
+.circulo-card {
+    padding: 22px 12px;
+    box-shadow: 0 5px 12px rgba(0, 37, 159, 0.08);
+    animation: none;
+}
+
+.ring-pulse { display: none; }
+
+.circulo-texto    { top: 20%; width: 88%; }
+.circulo-texto h2 { font-size: 13px; }
+.circulo-texto p  { font-size: 10px; line-height: 1.3; }
+
+
+/* ____________________________________________________________
+   18. SUBCATEGORÍAS & CONTENIDO FINAL
+   ____________________________________________________________ */
+
+.cabecera-curva { padding: 12px 14px; }
+.enlace-atras   { font-size: 12px; padding: 7px 14px; }
+
+.grid-subcategorias {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin: 28px auto 40px;
+    padding: 0 14px;
+}
+
+.tarjeta-subcat      { padding: 14px; border-radius: 12px; }
+.tarjeta-subcat img  { width: 48px; height: 48px; margin-bottom: 8px; }
+.tarjeta-subcat h1   { font-size: 13px; }
+.tarjeta-subcat span { font-size: 11px; }
+
+.tarjeta-subcat-nueva { border-radius: 12px; }
+.subcat-imagen-wrap   { height: 110px; }
+.subcat-sin-imagen i  { font-size: 30px; }
+
+.subcat-texto        { padding: 11px 12px 14px; }
+.subcat-texto h2     { font-size: 13px; }
+.subcat-texto span   { font-size: 11px; }
+
+.contenido-principal-wrapper { padding: 0 14px 40px; }
+
+.contenido-hero {
+    height: 155px;
+    border-radius: 0 0 14px 14px;
+    margin-bottom: 22px;
+}
+
+.contenido-hero-texto    { padding: 15px 18px; }
+.contenido-hero-texto h1 { font-size: 20px; }
+.contenido-hero-texto p  { font-size: 12px; }
+
+.contenido-bloques { gap: 12px; margin-bottom: 22px; }
+
+.bloque-info            { padding: 18px 16px; border-radius: 12px; }
+.bloque-info-header     { gap: 10px; margin-bottom: 10px; }
+.bloque-icono           { width: 34px; height: 34px; border-radius: 8px; }
+.bloque-icono i         { font-size: 14px; }
+.bloque-info-header h2  { font-size: 15px; }
+.bloque-descripcion     { font-size: 12px; margin: 0 0 10px; padding-bottom: 10px; }
+.bloque-cuerpo          { font-size: 13px; line-height: 1.75; }
+
+.btn-volver-grande { padding: 9px 20px; font-size: 12px; gap: 6px; }
+
+
+/* ____________________________________________________________
+   19. PANTALLAS MUY PEQUEÑAS (480px)
+   ____________________________________________________________ */
+
+@media (max-width: 480px) {
+
+    .contenedor-hero { padding: 10px 4% 60px; }
+    .titulo-gigante  { font-size: 30px; margin-top: 20px; }
+    .medicos-logo    { width: 72px; }
+
+    .caja-info,
+    .caja-info2 { padding: 18px 12px; gap: 16px; margin: 22px auto; }
+
+    .columna-texto h1,
+    .columna-texto h2 { font-size: 16px; }
+    .columna-texto p  { font-size: 13px; }
+
+    .imagen-circular { width: 130px; height: 130px; }
+
+    .caja-sobre-vertical { padding: 20px 12px; }
+    .titulo-seccion      { font-size: 17px; }
+
+    .pie-pagina         { padding: 25px 10px; }
+    .columna-footer h3  { font-size: 12px; }
+    .logo-footer-blanco { width: 90px; }
+    .redes-sociales a i { font-size: 18px; }
+
+    .formulario     { margin: 22% auto 0; }
+    .imagen-lateral { height: 140px; }
+    .formulario form { padding: 22px 16px; }
+
+    .grid-etiquetas {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        padding: 0 10px;
+    }
+
+    .grid-subcategorias { grid-template-columns: 1fr; }
+
+    table.tabla-admin { min-width: 460px; font-size: 12px; }
+
+    .perfil-card { padding: 55px 14px 25px; }
+}
+/* ── calculadora en móvil ── */
+.calculadora {
+    padding: 20px 16px;
+    border-radius: 12px;
+    margin-top: 18px;
+}
+
+.calculadora h3      { font-size: 15px; margin-bottom: 14px; }
+.calculadora label   { font-size: 12px; }
+.calculadora button  { padding: 11px; font-size: 13px; }
+
+.calculadora-resultado       { padding: 12px 14px; font-size: 14px; }
+.calculadora-resultado span  { font-size: 19px; }
+/* ══════════════════════════════════════════════════════════════
+   SECCIÓN CONTACTO MOCIL
+   ══════════════════════════════════════════════════════════════ */
+
+.seccion-contacto-form {
+    padding: 40px 16px;
+}
+
+.contacto-form-cabecera h2 {
+    font-size: 1.5rem;
+}
+
+.contacto-formulario {
+    padding: 28px 20px;
+}
