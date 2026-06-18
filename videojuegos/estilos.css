@@ -1,0 +1,77 @@
+body{
+    padding-bottom: 80px;
+    background-color: rgb(230, 243, 255);
+}
+
+header {
+    background-color: rgb(255, 155, 155);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    font-family: 'Cinzel', serif;
+    text-align: center;
+}
+
+a{
+  color: black;
+  text-decoration: none;
+  font-family: 'Cinzel', serif;
+}
+
+a:hover{
+    color:white;
+}
+
+h3{
+    font-family: 'Cinzel', serif;
+}
+
+main {
+    margin-top: 11%;
+    text-align: center;
+}
+
+footer {
+    background-color: rgb(255, 155, 155);
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    height: 60px;
+    text-align: center;
+}
+
+.producto{
+    background-color: rgba(255, 72, 72, 0.685);
+    width: 100%;
+    margin-top: 0;
+    left: 0;
+    font-family: 'Cinzel', serif;
+}
+
+#listaVideojuego{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+#listaDLC{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.tarjeta{
+    width: 250px;
+    border: 1px solid black;
+    padding: 15px;
+    border-radius: 10px;
+    background: linear-gradient(rgb(230, 243, 255), white);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.descripcion{
+    white-space: normal;
+    overflow-wrap: break-word;
+}
